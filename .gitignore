@@ -1,0 +1,35 @@
+
+# Python generated files
+__pycache__/
+*.py[cod]
+*.pyo
+
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+
+# Local databases
+db.sqlite3
+db.sqlite3-journal
+
+
+# Django generated files
+staticfiles/
+
+# Uploaded media files (review before committing)
+media/
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

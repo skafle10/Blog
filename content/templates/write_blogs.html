@@ -1,0 +1,638 @@
+{% load static %}
+<!-- templates/blog/post_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Write a new post — Blog Mandu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F1EEE3;
+      --paper: #FBF9F3;
+      --ink: #221F1A;
+      --ink-soft: #5B5648;
+      --indigo: #2B3A55;
+      --brick: #9C4A32;
+      --gold: #B98A2E;
+      --line: #DBD4C2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    /* ---------- Header (matches homepage, compressed to fit just the logo) ---------- */
+    .site-header {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 24px 14px 4px;
+      position: relative;
+      /* containing block for .profile-widget */
+    }
+
+    .logo {
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 0.82;
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .logo-top {
+      font-size: 2.1rem;
+      letter-spacing: 0.16em;
+      color: var(--ink);
+    }
+
+    .logo-rule {
+      width: 30px;
+      height: 2px;
+      background: var(--brick);
+      margin: 8px 0;
+    }
+
+    .logo-bottom {
+      font-size: 2.1rem;
+      letter-spacing: 0.16em;
+      color: var(--indigo);
+    }
+
+    .logo-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 10px;
+    }
+
+    nav {
+      display: flex;
+      gap: 22px;
+      margin-top: 16px;
+      font-size: 0.88rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--ink-soft);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--brick);
+      border-color: var(--brick);
+    }
+
+    /* ---------- Profile widget (top-right of header, scrolls with the page) ---------- */
+    .profile-widget {
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--indigo);
+      color: var(--paper);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      border: 1px solid var(--line);
+      transition: background 0.2s ease;
+    }
+
+    .profile-widget:hover .profile-avatar {
+      background: var(--brick);
+    }
+
+    .profile-username {
+      margin-top: 6px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--ink-soft);
+      max-width: 90px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .profile-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 170px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      box-shadow: 0 10px 28px rgba(34, 31, 26, 0.14);
+      padding: 6px;
+      display: none;
+      cursor: default;
+    }
+
+    .profile-menu.open {
+      display: block;
+    }
+
+    .profile-menu form {
+      display: block;
+    }
+
+    .profile-menu a,
+    .profile-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 10px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--ink);
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .profile-menu a:hover,
+    .profile-menu button:hover {
+      background: var(--bg);
+      color: var(--brick);
+    }
+
+    .profile-menu .menu-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 2px;
+    }
+
+    .profile-menu button.danger:hover {
+      color: var(--brick);
+    }
+
+
+    .errror {
+      color: #a3241f;
+      background: #f8d7da;
+      border: 1px solid #f1aeb5;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .errror ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .errror li {
+      color: #a3241f;
+    }
+
+    @media (max-width: 760px) {
+      .profile-widget {
+        top: 16px;
+        right: 16px;
+      }
+    }
+
+    /* ---------- Pagoda roofline divider (signature element) ---------- */
+    .roofline {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .roofline svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Compose section ---------- */
+    main.compose {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 18px 24px 100px;
+    }
+
+    .compose .eyebrow {
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin: 0 0 18px;
+    }
+
+    .compose h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 2rem;
+      margin: 0 0 8px;
+    }
+
+    .compose p.sub {
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      margin: 0 0 24px;
+    }
+
+    .form-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 40px 40px 36px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    .form-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brick);
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      padding: 8px 0 10px;
+      font-size: 1rem;
+      color: var(--ink);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.18s ease;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-bottom: 1px solid var(--brick);
+    }
+
+    input#id_title {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.5rem;
+      padding-bottom: 12px;
+    }
+
+    input#id_title::placeholder,
+    textarea::placeholder,
+    input[type="text"]::placeholder {
+      color: var(--ink-soft);
+      opacity: 0.6;
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.8;
+      min-height: 220px;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      margin-top: 8px;
+    }
+
+    .file-upload {
+      border: 1px dashed var(--line);
+      border-radius: 2px;
+      padding: 22px;
+      text-align: center;
+      background: var(--bg);
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .file-upload:hover {
+      border-color: var(--brick);
+    }
+
+    input[type="file"] {
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+
+    input[type="file"]::file-selector-button {
+      background: var(--indigo);
+      color: var(--paper);
+      border: none;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-right: 14px;
+      transition: background 0.2s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: var(--brick);
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .form-actions .note {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+
+    .btn-submit {
+      background: var(--brick);
+      color: var(--paper);
+      border: none;
+      border-radius: 999px;
+      padding: 13px 30px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: var(--indigo);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 24px 50px;
+    }
+
+    .footer-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 760px) {
+
+      .logo-top,
+      .logo-bottom {
+        font-size: 1.9rem;
+      }
+
+      .form-card {
+        padding: 30px 24px 26px;
+      }
+
+      .form-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .btn-submit {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-top">BLOG</span>
+      <span class="logo-rule"></span>
+      <span class="logo-bottom">MANDU</span>
+      <span class="logo-tagline">Dispatches from the valley</span>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="profile-widget" id="profileWidget">
+      <div class="profile-avatar">{{ user.username|first|upper }}</div>
+      <div class="profile-username">{{ user.username }}</div>
+
+      <div class="profile-menu" id="profileMenu">
+        <a href="{% url 'login' %}">Switch account</a>
+        <div class="menu-divider"></div>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="danger">Sign out</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+
+    <div class="profile-widget" id="profileWidget">
+      <div class="profile-avatar">SignUp</div>
+
+      <div class="profile-menu" id="profileMenu">
+        <a href="{% url 'login' %}">Login</a>
+        <div class="menu-divider"></div>
+        <form method="post" action="{% url 'signup' %}">
+          {% csrf_token %}
+          <button type="submit" class="danger">SignUp</button>
+        </form>
+      </div>
+    </div>
+
+    {% endif %}
+  </header>
+
+
+  <main class="compose">
+    <p class="eyebrow">Contributor desk</p>
+    <h1>Write a new post</h1>
+    <p class="sub">Share a dispatch of your own — fill in the details below and publish when ready.</p>
+
+
+
+    <div class="form-card">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="id_title">Title</label>
+          <input type="text" id="id_title" name="title" value="{% if form %}{{form.title.value|default:''}}{% endif %}"
+            placeholder="Enter blog title"> 
+
+          {% if form.is_bound and form.title.errors %}
+          <div class="errror">{{ form.title.errors }}</div>
+          {% endif %}
+          
+        </div>
+        
+
+        <div class="form-group">
+          <label for="id_thumbnail">Thumbnail</label>
+          <div class="file-upload">
+            <input type="file" id="id_thumbnail" name="thumbnail"
+              value="{% if form %}{{form.thumbnail.value|default:''}} {% endif %}" accept="image/*">
+          </div>
+          <p class="hint">Upload thumbnail to your blog</p>
+
+          {% if form.is_bound and form.thumbnail.errors %}
+          <div class="errror">{{ form.thumbnail.errors }}</div>
+          {% endif %}
+
+        </div>
+
+        <div class="form-group">
+          <label for="id_category">Category</label>
+          <input type="text" id="id_category" name="category"
+            value="{% if form %}{{form.category.value|default:''}}{% endif %}" placeholder="e.g. Technology, Travel, Food"> 
+
+          {% if form.is_bound and form.category.errors %}
+          <div class="errror">{{ form.category.errors }}</div>
+          {% endif %}
+          
+        </div>
+
+        <div class="form-group">
+          <label for="id_content">Content</label>
+          <textarea id="id_content" name="body" rows="10" placeholder="Write your blog post here..."
+            >{% if form %}{{form.body.value|default:''}}{% endif %} </textarea>
+          <p class="hint">Paragraph breaks are preserved when your post is published.</p>
+          
+          {% if form.is_bound and  form.body.errors %}
+          <div class="errror">{{ form.body.errors }}</div>
+          {% endif %}
+          
+        </div>
+
+        <div class="form-group">
+          <label for="id_author">Author</label>
+          <input type="text" id="id_author" name="writer" value="{% if form %}{{form.writer.value|default:''}}{% endif %}"
+            placeholder="Your name"> 
+            
+          {% if form.is_bound and form.writer.errors %}
+          <div class="errror">{{ form.writer.errors }}</div>
+          {% endif %}
+          
+        </div>
+
+        <div class="form-actions">
+          <span class="note">Your post goes live immediately after publishing.</span>
+          <button type="submit" class="btn-submit">Publish post</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+
+
+  <footer>
+    <div class="footer-inner">
+      <span>© {% now "Y" %} Blog Mandu</span>
+      <span>Kathmandu, Nepal</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var widget = document.getElementById('profileWidget');
+      var menu = document.getElementById('profileMenu');
+      if (!widget || !menu) return;
+
+      widget.addEventListener('click', function (e) {
+        e.stopPropagation();
+        menu.classList.toggle('open');
+      });
+
+      menu.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener('click', function () {
+        menu.classList.remove('open');
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') menu.classList.remove('open');
+      });
+    })();
+  </script>
+
+</body>
+
+</html>

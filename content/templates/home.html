@@ -1,0 +1,834 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Blog Mandu{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F1EEE3;
+      --paper: #FBF9F3;
+      --ink: #221F1A;
+      --ink-soft: #5B5648;
+      --indigo: #2B3A55;
+      --brick: #9C4A32;
+      --gold: #B98A2E;
+      --line: #DBD4C2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 56px 24px 32px;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 0.82;
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .logo-top {
+      font-size: 2.4rem;
+      letter-spacing: 0.16em;
+      color: var(--ink);
+    }
+
+    .logo-rule {
+      width: 34px;
+      height: 2px;
+      background: var(--brick);
+      margin: 10px 0;
+    }
+
+    .logo-bottom {
+      font-size: 2.4rem;
+      letter-spacing: 0.16em;
+      color: var(--indigo);
+    }
+
+    .logo-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 12px;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      padding-top: 14px;
+      font-size: 0.92rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--ink-soft);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--brick);
+      border-color: var(--brick);
+    }
+
+    /* ---------- Topbar (fixed top-right): greeting + Write for us ---------- */
+    .topbar {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .greeting {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 16px 6px 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .greeting-avatar {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--indigo), var(--brick));
+      color: var(--paper);
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .greeting-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .greeting-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .greeting-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .greeting-caret {
+      display: flex;
+      align-items: center;
+      margin-left: 2px;
+      color: var(--ink-soft);
+      transition: transform 0.2s ease;
+    }
+
+    .greeting.open .greeting-caret {
+      transform: rotate(180deg);
+    }
+
+    /* ---------- Account icon (logged-out) ---------- */
+    .account_icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .account_icon:hover {
+      border-color: var(--brick);
+      color: var(--brick);
+    }
+
+    .account_icon svg {
+      display: block;
+    }
+
+    /* ---------- Account dropdown ---------- */
+    .account-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 190px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(34, 31, 26, 0.12);
+      padding: 6px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+      z-index: 20;
+    }
+
+    .greeting.open .account-menu,
+    .account_icon.open .account-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .account-menu a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.86rem;
+      color: var(--ink);
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .account-menu a:hover {
+      background: var(--bg);
+      color: var(--brick);
+    }
+
+    .account-menu .menu-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 6px;
+    }
+
+    .account-menu .logout-link:hover {
+      color: #A3352A;
+    }
+
+    @media (max-width: 760px) {
+      .greeting {
+        padding: 5px 14px 5px 5px;
+      }
+    }
+
+    .write-for-us {
+      background: var(--brick);
+      color: var(--paper);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--brick);
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .write-for-us:hover {
+      background: var(--indigo);
+      border-color: var(--indigo);
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        position: static;
+        display: flex;
+        justify-content: flex-end;
+        margin: 0 24px 12px;
+      }
+    }
+
+    /* ---------- Pagoda roofline divider (signature element) ---------- */
+    .roofline {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .roofline svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Highlighted section ---------- */
+    .highlights {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 24px 8px;
+    }
+
+    .success {
+      color: green;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      padding: 10px;
+      border-radius: 5px;
+      list-style: none;
+    }
+
+    .eyebrow {
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin: 0 0 22px;
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .highlight-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 26px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* When a thumbnail is present, drop the outer padding so the image can
+     bleed to the card edges, and move the padding onto the body wrapper. */
+    .highlight-card.has-thumb {
+      padding: 0;
+    }
+
+    .highlight-thumb {
+      display: block;
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: var(--bg);
+    }
+
+    .highlight-card.has-thumb .highlight-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 22px 22px 26px;
+    }
+
+    .highlight-tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brick);
+      font-weight: 600;
+    }
+
+    .highlight-card h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.22rem;
+      margin: 0;
+      line-height: 1.28;
+    }
+
+    .highlight-card p {
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    .highlight-card .read-link {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--indigo);
+      text-decoration: none;
+    }
+
+    .highlight-card .read-link:hover {
+      color: var(--brick);
+    }
+
+    /* ---------- Highlight card edit/delete actions ---------- */
+    .highlight-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .highlight-card.has-thumb .highlight-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      margin-top: 0;
+      z-index: 2;
+    }
+
+    .delete-form {
+      margin: 0;
+      display: contents;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      cursor: pointer;
+      padding: 0;
+      text-decoration: none;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .highlight-card.has-thumb .action-btn {
+      background: rgba(251, 249, 243, 0.92);
+      backdrop-filter: blur(2px);
+    }
+
+    .action-btn:hover {
+      color: var(--indigo);
+      border-color: var(--indigo);
+    }
+
+    .action-btn.delete-btn:hover {
+      color: var(--brick);
+      border-color: var(--brick);
+    }
+
+    .action-btn svg {
+      display: block;
+    }
+
+    /* ---------- Main feed ---------- */
+    main.feed {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+    }
+
+    main.feed>h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.6rem;
+      margin: 0 0 8px;
+    }
+
+    main.feed>.feed-sub {
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      margin: 0 0 36px;
+    }
+
+    .post-entry {
+      padding: 30px 0;
+    }
+
+    .post-meta {
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+    }
+
+    .post-entry h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.5rem;
+      margin: 0 0 10px;
+      line-height: 1.3;
+    }
+
+    .post-entry h3 a {
+      text-decoration: none;
+      background-image: linear-gradient(var(--brick), var(--brick));
+      background-size: 0% 1px;
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: background-size 0.25s ease;
+    }
+
+    .post-entry h3 a:hover {
+      background-size: 100% 1px;
+    }
+
+    .post-entry p {
+      color: var(--ink-soft);
+      font-size: 1rem;
+      margin: 0 0 12px;
+    }
+
+    .post-entry .read-more {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--indigo);
+      text-decoration: none;
+    }
+
+    .post-entry .read-more:hover {
+      color: var(--brick);
+    }
+
+    .divider-mini {
+      height: 1px;
+      background: var(--line);
+    }
+
+    .empty-state {
+      color: var(--ink-soft);
+      font-style: italic;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      font-size: 0.88rem;
+    }
+
+    .pagination a {
+      text-decoration: none;
+      color: var(--indigo);
+    }
+
+    .pagination a:hover {
+      color: var(--brick);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 24px 50px;
+    }
+
+    .footer-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 760px) {
+      .site-header {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .highlight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .logo-top,
+      .logo-bottom {
+        font-size: 2rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  {% if user.is_authenticated %}
+  <div class="topbar">
+    <div class="greeting" id="accountGreeting">
+      <span class="greeting-avatar">{{ user.username|slice:":1"|upper }}</span>
+      <span class="greeting-text">
+        <span class="greeting-label">Welcome back</span>
+        <span class="greeting-name">{{ user.username }}</span>
+      </span>
+      <span class="greeting-caret">
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </span>
+
+      <div class="account-menu">
+        <a href="{% url 'login' %}">Switch account</a>
+        <div class="menu-divider"></div>
+        <a href="{% url 'logout' %}" class="logout-link">Log out</a>
+      </div>
+    </div>
+    <a class="write-for-us" href="{% url 'write_content' %}">Write for us</a>
+  </div>
+  {% else %}
+
+  <div class="topbar">
+    <button type="button" class="account_icon" id="accountGuest" aria-haspopup="true" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8" />
+        <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+
+      <div class="account-menu">
+        <a href="{% url 'signup' %}">Create account</a>
+        <a href="{% url 'login' %}">Login</a>
+      </div>
+    </button>
+
+    <a class="write-for-us" href="{% url 'write_content' %}">Write for us</a>
+  </div>
+  {% endif %}
+
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-top">BLOG</span>
+      <span class="logo-rule"></span>
+      <span class="logo-bottom">MANDU</span>
+      <span class="logo-tagline">Dispatches from the valley</span>
+    </div>
+    <nav>
+      <a href="{% url 'home_page' %}" class="active">Home</a>
+      <a href="{% url 'archive' %}">Archive</a>
+      <a href="{% url 'about_page' %}">About</a>
+    </nav>
+  </header>
+
+  <!-- Signature motif: a five-tier pagoda roofline, echoing Kathmandu's
+     Newari temple architecture (e.g. Nyatapola), used as a structural
+     divider rather than decoration. -->
+  <div class="roofline" aria-hidden="true">
+    <svg viewBox="0 0 920 60" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <path
+        d="M0 54 L120 54 L150 34 L180 54 L300 54 L340 24 L380 54 L500 54 L540 14 L580 54 L700 54 L740 34 L780 54 L920 54"
+        stroke="#2B3A55" stroke-width="1.4" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <section class="highlights">
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+        {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p class="eyebrow">Highlighted</p>
+    <div class="highlight-grid">
+      {% for post in highlighted_posts %}
+
+      <article class="highlight-card{% if post.thumbnail %} has-thumb{% endif %}">
+
+        {% if user.is_authenticated and post.user_id == user.id or user.is_staff %}
+        
+        <div class="highlight-actions">
+          <a class="action-btn edit-btn" href="{% url 'post_edit' post.slug %}" title="Edit" aria-label="Edit post">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <form class="delete-form" action="{% url 'post_delete' post.slug %}" method="post"
+            onsubmit="return confirm('Delete “{{ post.title }}”? This can’t be undone.');">
+            {% csrf_token %}
+            <button type="submit" class="action-btn delete-btn" title="Delete" aria-label="Delete post">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+        </div>
+        {% endif %}
+
+        {% if post.thumbnail %}
+        <a href="{% url 'post_detail' post.slug %}">
+          <img class="highlight-thumb" src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+        </a>
+        <div class="highlight-body">
+          {% if post.category %}<span class="highlight-tag">{{ post.category }}</span>{% endif %}
+          <h3><a class="read-link" style="color:inherit;text-decoration:none;"
+              href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h3>
+          <p>{{ post.excerpt }}</p>
+          <a class="read-link" href="{% url 'post_detail' post.slug %}">Read the piece →</a>
+
+        </div>
+
+        {% else %}
+        {% if post.category %}<span class="highlight-tag">{{ post.category }}</span>{% endif %}
+        <h3><a class="read-link" style="color:inherit;text-decoration:none;" href="{% url 'post_detail' post.slug %}">{{
+            post.title }}</a></h3>
+        <p>{{ post.excerpt }}</p>
+        <a class="read-link" href="{% url 'post_detail' post.slug %}">Read the piece →</a>
+        {% endif %}
+      </article>
+      {% empty %}
+      <p class="empty-state">Nothing pinned yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="roofline" aria-hidden="true" style="margin-top:20px;">
+    <svg viewBox="0 0 920 30" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <path d="M0 26 L400 26 L460 6 L520 26 L920 26" stroke="#DBD4C2" stroke-width="1" />
+    </svg>
+  </div>
+
+  <main class="feed">
+    <h2>Latest writing</h2>
+
+
+    {% for post in posts %}
+    <article class="post-entry">
+      <div class="post-meta">{{ post.published_date|date:"d M Y" }} · {{ post.author }}</div>
+      <h3><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h3>
+      <p>{{ post.excerpt }}</p>
+      <a class="read-more" href="{% url 'post_detail' post.slug %}">Continue reading →</a>
+    </article>
+    {% if not forloop.last %}<div class="divider-mini"></div>{% endif %}
+    {% empty %}
+
+    <p class="empty-state">No posts yet — the valley is quiet. Check back soon.</p>
+    {% endfor %}
+
+    {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}">← Newer</a>
+      {% else %}<span></span>{% endif %}
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}">Older →</a>
+      {% else %}<span></span>{% endif %}
+    </div>
+    {% endif %}
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© {% now "Y" %} Blog Mandu</span>
+      <span>Kathmandu, Nepal</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var greeting = document.getElementById('accountGreeting');
+      if (greeting) {
+        greeting.addEventListener('click', function (e) {
+          e.stopPropagation();
+          greeting.classList.toggle('open');
+        });
+      }
+
+      var guest = document.getElementById('accountGuest');
+      if (guest) {
+        guest.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var isOpen = guest.classList.toggle('open');
+          guest.setAttribute('aria-expanded', isOpen);
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        if (greeting && !greeting.contains(e.target)) {
+          greeting.classList.remove('open');
+        }
+        if (guest && !guest.contains(e.target)) {
+          guest.classList.remove('open');
+          guest.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          if (greeting) greeting.classList.remove('open');
+          if (guest) {
+            guest.classList.remove('open');
+            guest.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

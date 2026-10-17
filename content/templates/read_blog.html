@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ post.title }} — Blog Mandu{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F1EEE3;
+      --paper: #FBF9F3;
+      --ink: #221F1A;
+      --ink-soft: #5B5648;
+      --indigo: #2B3A55;
+      --brick: #9C4A32;
+      --gold: #B98A2E;
+      --line: #DBD4C2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 56px 24px 32px;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 0.82;
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .logo-top {
+      font-size: 2.4rem;
+      letter-spacing: 0.16em;
+      color: var(--ink);
+    }
+
+    .logo-rule {
+      width: 34px;
+      height: 2px;
+      background: var(--brick);
+      margin: 10px 0;
+    }
+
+    .logo-bottom {
+      font-size: 2.4rem;
+      letter-spacing: 0.16em;
+      color: var(--indigo);
+    }
+
+    .logo-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 12px;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      padding-top: 14px;
+      font-size: 0.92rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--ink-soft);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--brick);
+      border-color: var(--brick);
+    }
+
+    /* ---------- Write for us (fixed top-right) ---------- */
+    .write-for-us {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 10;
+      background: var(--brick);
+      color: var(--paper);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--brick);
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .write-for-us:hover {
+      background: var(--indigo);
+      border-color: var(--indigo);
+    }
+
+    @media (max-width: 760px) {
+      .write-for-us {
+        position: static;
+        display: inline-block;
+        margin: 0 24px 12px;
+      }
+    }
+
+    /* ---------- Pagoda roofline divider (signature element) ---------- */
+    .roofline {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .roofline svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Post page ---------- */
+    main.post-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 44px 24px 100px;
+    }
+
+    .post-back {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--indigo);
+      text-decoration: none;
+      margin-bottom: 34px;
+    }
+
+    .post-back:hover {
+      color: var(--brick);
+    }
+
+    .post-meta-top {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      margin-bottom: 18px;
+    }
+
+    .post-meta-top .writer {
+      color: var(--brick);
+      font-weight: 600;
+    }
+
+    .post-meta-top .dot {
+      color: var(--line);
+    }
+
+    main.post-page h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 2.3rem;
+      line-height: 1.28;
+      margin: 0 0 26px;
+      color: var(--ink);
+    }
+
+    .post-rule {
+      width: 40px;
+      height: 2px;
+      background: var(--brick);
+      margin: 0 0 34px;
+    }
+
+    /* ---------- Edit / Delete actions ---------- */
+    .post-actions {
+      display: flex;
+      gap: 12px;
+      margin: 0 0 34px;
+    }
+
+    .post-actions .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-decoration: none;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .post-actions .edit-btn:hover {
+      background: var(--indigo);
+      border-color: var(--indigo);
+      color: var(--paper);
+    }
+
+    .post-actions .delete-btn {
+      color: var(--brick);
+      border-color: var(--brick);
+    }
+
+    .post-actions .delete-btn:hover {
+      background: var(--brick);
+      color: var(--paper);
+    }
+
+    .post-actions form {
+      margin: 0;
+      display: inline-flex;
+    }
+
+    .post-body {
+      font-size: 1.06rem;
+      color: var(--ink);
+      line-height: 1.85;
+      font-weight: 400;
+    }
+
+    .post-body p {
+      margin: 0 0 22px;
+    }
+
+    .divider-mini {
+      height: 1px;
+      background: var(--line);
+      margin: 44px 0 30px;
+    }
+
+    .post-footer-nav {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .post-footer-nav a {
+      text-decoration: none;
+      color: var(--indigo);
+    }
+
+    .post-footer-nav a:hover {
+      color: var(--brick);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 24px 50px;
+    }
+
+    .footer-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 760px) {
+      .site-header {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .logo-top,
+      .logo-bottom {
+        font-size: 2rem;
+      }
+
+      main.post-page h1 {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-top">BLOG</span>
+      <span class="logo-rule"></span>
+      <span class="logo-bottom">MANDU</span>
+      <span class="logo-tagline">Dispatches from the valley</span>
+    </div>
+
+  </header>
+
+
+  <main class="post-page">
+    <a class="post-back" href="{% url 'home_page' %}">&larr; Back to all posts</a>
+
+    <div class="post-meta-top">
+      <span class="writer">{{ post.writer }}</span>
+      <span class="dot">&middot;</span>
+      <span>{{ post.uploaded_at|date:"d M Y" }}</span>
+    </div>
+
+    <h1>{{ post.title }}</h1>
+    <div class="post-rule"></div>
+
+    {% if user.is_authenticated and post.user_id == user.id or user.is_staff %}
+
+    <div class="post-actions">
+      <a class="action-btn edit-btn" href="{% url 'post_edit' post.slug %}">Edit post</a>
+      <form action="{% url 'post_delete' post.slug %}" method="post"
+        onsubmit="return confirm('Delete this post? This cannot be undone.');">
+        {% csrf_token %}
+        <button type="submit" class="action-btn delete-btn">Delete post</button>
+      </form>
+    </div>
+    {% endif %}
+
+    
+    <div class="post-body">{{ post.body|linebreaks }}</div>
+
+    <div class="divider-mini"></div>
+
+    <div class="post-footer-nav">
+      <a href="{% url 'home_page' %}">&larr; More stories</a>
+      <a href="{% url 'archive' %}">Browse archive →</a>
+    </div>
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© {% now "Y" %} Blog Mandu</span>
+      <span>Kathmandu, Nepal</span>
+    </div>
+  </footer>
+
+</body>
+
+</html>

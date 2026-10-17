@@ -1,0 +1,398 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}About — Blog Mandu{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F1EEE3;
+    --paper: #FBF9F3;
+    --ink: #221F1A;
+    --ink-soft: #5B5648;
+    --indigo: #2B3A55;
+    --brick: #9C4A32;
+    --gold: #B98A2E;
+    --line: #DBD4C2;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Header ---------- */
+  .site-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 24px 32px;
+  }
+
+  .logo{
+    display: flex;
+    flex-direction: column;
+    line-height: 0.82;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .logo-top{
+    font-size: 2.4rem;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+  }
+
+  .logo-rule{
+    width: 34px;
+    height: 2px;
+    background: var(--brick);
+    margin: 10px 0;
+  }
+
+  .logo-bottom{
+    font-size: 2.4rem;
+    letter-spacing: 0.16em;
+    color: var(--indigo);
+  }
+
+  .logo-tagline{
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 12px;
+  }
+
+  nav{
+    display: flex;
+    gap: 28px;
+    padding-top: 14px;
+    font-size: 0.92rem;
+  }
+
+  nav a{
+    text-decoration: none;
+    color: var(--ink-soft);
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  nav a:hover, nav a.active{
+    color: var(--brick);
+    border-color: var(--brick);
+  }
+
+  /* ---------- Write for us (fixed top-right) ---------- */
+  .write-for-us{
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+    background: var(--brick);
+    color: var(--paper);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--brick);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .write-for-us:hover{
+    background: var(--indigo);
+    border-color: var(--indigo);
+  }
+
+  @media (max-width: 760px){
+    .write-for-us{
+      position: static;
+      display: inline-block;
+      margin: 0 24px 12px;
+    }
+  }
+
+  /* ---------- Pagoda roofline divider (signature element) ---------- */
+  .roofline{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .roofline svg{ display: block; width: 100%; height: auto; }
+
+  /* ---------- About page ---------- */
+  main.about-page{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 44px 24px 100px;
+  }
+
+  .about-back{
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--indigo);
+    text-decoration: none;
+    margin-bottom: 34px;
+  }
+
+  .about-back:hover{ color: var(--brick); }
+
+  .about-eyebrow{
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brick);
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+
+  main.about-page h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 2.3rem;
+    line-height: 1.28;
+    margin: 0 0 26px;
+    color: var(--ink);
+  }
+
+  .about-rule{
+    width: 40px;
+    height: 2px;
+    background: var(--brick);
+    margin: 0 0 34px;
+  }
+
+  .about-body{
+    font-size: 1.06rem;
+    color: var(--ink);
+    line-height: 1.85;
+    font-weight: 400;
+  }
+
+  .about-body p{ margin: 0 0 22px; }
+
+  .about-lede{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--indigo);
+    margin: 0 0 30px;
+  }
+
+  /* ---------- Values grid ---------- */
+  .about-values{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin: 40px 0 44px;
+  }
+
+  .about-value{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 20px;
+  }
+
+  .about-value-mark{
+    width: 22px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .about-value h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+
+  .about-value p{
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ---------- Sign-off ---------- */
+  .about-signoff{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+  }
+
+  .about-signoff-mark{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--brick);
+  }
+
+  .about-signoff-role{
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- CTA ---------- */
+  .about-cta{
+    margin-top: 44px;
+    padding: 30px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .about-cta p{
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+
+  .about-cta a{
+    display: inline-block;
+    background: var(--brick);
+    color: var(--paper);
+    font-weight: 500;
+    font-size: 0.88rem;
+    text-decoration: none;
+    padding: 11px 22px;
+    border-radius: 999px;
+    border: 1px solid var(--brick);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .about-cta a:hover{
+    background: var(--indigo);
+    border-color: var(--indigo);
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 34px 24px 50px;
+  }
+
+  .footer-inner{
+    max-width: 920px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px){
+    .site-header{ flex-direction: column; gap: 20px; }
+    .logo-top, .logo-bottom{ font-size: 2rem; }
+    main.about-page h1{ font-size: 1.8rem; }
+    .about-values{ grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-top">BLOG</span>
+    <span class="logo-rule"></span>
+    <span class="logo-bottom">MANDU</span>
+    <span class="logo-tagline">Dispatches from the valley</span>
+  </div>
+</header>
+
+
+<main class="about-page">
+  <a class="about-back" href="{% url 'home_page' %}">&larr; Back to all posts</a>
+
+  <p class="about-eyebrow">About Us</p>
+  <h1>Stories from the valley, told by the people who live them</h1>
+  <div class="about-rule"></div>
+
+  <div class="about-body">
+
+    <p class="about-lede">Blog Mandu is a place for writers who have something real to say. We're not chasing viral headlines or recycled hot takes — we're looking for posts that teach, challenge, or genuinely add to what someone knows.</p>
+
+    <p>Whether you're an expert unpacking a niche topic, a curious mind sharing what you've learned, or a professional with insights from the field, this is where your writing finds an audience that actually wants to learn.</p>
+
+    <p>Every piece on this site is written, edited, and read with care. We believe good writing doesn't need to shout to be heard.</p>
+  </div>
+
+  <div class="about-values">
+    <div class="about-value">
+      <div class="about-value-mark"></div>
+      <h3>Real knowledge</h3>
+      <p>Written by people who actually know the subject.</p>
+    </div>
+    <div class="about-value">
+      <div class="about-value-mark"></div>
+      <h3>No fluff</h3>
+      <p>No filler, no clickbait — just posts worth your time.</p>
+    </div>
+    <div class="about-value">
+      <div class="about-value-mark"></div>
+      <h3>Anyone can contribute</h3>
+      <p>Got something worth teaching? We want to publish it.</p>
+    </div>
+  </div>
+
+  <div class="about-signoff">
+    <span class="about-signoff-mark">Blog Mandu</span>
+    <span class="about-signoff-role">Editorial Team</span>
+  </div>
+
+  <div class="about-cta">
+    <p>"Know something worth sharing? We'd love to read it."</p>
+    <a href="{% url 'write_content' %}">Write for us</a>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© {% now "Y" %} Blog Mandu</span>
+    <span>Kathmandu, Nepal</span>
+  </div>
+</footer>
+
+</body>
+</html>

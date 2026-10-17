@@ -1,0 +1,332 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Blog Mandu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F1EEE3;
+    --paper: #FBF9F3;
+    --ink: #221F1A;
+    --ink-soft: #5B5648;
+    --indigo: #2B3A55;
+    --brick: #9C4A32;
+    --gold: #B98A2E;
+    --line: #DBD4C2;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Header (matches homepage) ---------- */
+  .site-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 920px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 56px 24px 32px;
+  }
+
+  .logo{
+    display: flex;
+    flex-direction: column;
+    line-height: 0.82;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .logo-top{
+    font-size: 2.4rem;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+  }
+
+  .logo-rule{
+    width: 34px;
+    height: 2px;
+    background: var(--brick);
+    margin: 10px 0;
+  }
+
+  .logo-bottom{
+    font-size: 2.4rem;
+    letter-spacing: 0.16em;
+    color: var(--indigo);
+  }
+
+  .logo-tagline{
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 12px;
+  }
+
+  nav{
+    display: flex;
+    gap: 28px;
+    padding-top: 14px;
+    font-size: 0.92rem;
+  }
+
+  nav a{
+    text-decoration: none;
+    color: var(--ink-soft);
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  nav a:hover{
+    color: var(--brick);
+    border-color: var(--brick);
+  }
+
+  /* ---------- Pagoda roofline divider (signature element) ---------- */
+  .roofline{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+  }
+
+  .roofline svg{ display: block; width: 100%; height: auto; }
+
+  /* ---------- Login section ---------- */
+  main.auth{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px 80px;
+  }
+
+  .card{
+    width: 100%;
+    max-width: 380px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 44px 40px 36px;
+  }
+
+  .card .eyebrow{
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+
+  .card h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.9rem;
+    letter-spacing: -0.005em;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+
+  .card p.sub{
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    margin: 0 0 34px;
+  }
+
+  form{ display: flex; flex-direction: column; gap: 28px; }
+
+  .field{ position: relative; }
+
+  .field label{
+    position: absolute;
+    top: 10px;
+    left: 0;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    pointer-events: none;
+    transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;
+    transform-origin: left top;
+  }
+
+  .field input{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    padding: 10px 0 8px;
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+    font-family: inherit;
+  }
+
+  .field input:focus{
+    border-bottom: 1px solid var(--brick);
+  }
+
+  .field input:focus ~ label,
+  .field input:not(:placeholder-shown) ~ label{
+    transform: translateY(-20px) scale(0.82);
+    color: var(--brick);
+  }
+
+  .field input:-webkit-autofill ~ label{
+    transform: translateY(-20px) scale(0.82);
+    color: var(--brick);
+  }
+
+  .errors{
+    font-size: 0.82rem;
+    color: var(--brick);
+    background: rgba(156, 74, 50, 0.08);
+    border: 1px solid rgba(156, 74, 50, 0.25);
+    border-radius: 2px;
+    margin: -10px 0 0;
+    padding: 10px 14px;
+    list-style: none;
+  }
+
+  button{
+    margin-top: 6px;
+    padding: 13px 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--brick);
+    color: var(--paper);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button:hover{ background: var(--indigo); }
+
+  .foot{
+    margin-top: 30px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  .foot a{
+    color: var(--indigo);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+  }
+
+  .foot a:hover{ color: var(--brick); border-color: var(--brick); }
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 34px 24px 50px;
+  }
+
+  .footer-inner{
+    max-width: 920px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px){
+    .site-header{ flex-direction: column; gap: 20px; }
+    .logo-top, .logo-bottom{ font-size: 2rem; }
+    .card{ padding: 36px 26px 30px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-top">BLOG</span>
+    <span class="logo-rule"></span>
+    <span class="logo-bottom">MANDU</span>
+    <span class="logo-tagline">Dispatches from the valley</span>
+  </div>
+
+</header>
+
+
+
+<main class="auth">
+  <div class="card">
+    <p class="eyebrow">Member sign in</p>
+    <h1>Welcome</h1>
+    <p class="sub">Sign in to continue writing.</p>
+
+    {% if form.errors %}
+      <ul class="errors">
+        <li>Your username or password didn't match. Please try again.</li>
+      </ul>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+
+      <div class="field">
+        <input type="text" name="username" id="id_username" placeholder=" " required autofocus>
+        <label for="id_username">Username</label>
+      </div>
+
+      <div class="field">
+        <input type="password" name="password" id="id_password" placeholder=" " required>
+        <label for="id_password">Password</label>
+      </div>
+
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+      <button type="submit">Sign in</button>
+    </form>
+
+    <p class="foot">Don't have an account? <a href="{% url 'signup' %}">Create one</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© {% now "Y" %} Blog Mandu</span>
+    <span>Kathmandu, Nepal</span>
+  </div>
+</footer>
+
+</body>
+</html>
